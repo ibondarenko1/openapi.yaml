@@ -1,4 +1,6 @@
 ![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0-brightgreen?logo=openapiinitiative)
+![License](https://img.shields.io/badge/License-Proprietary-red)
+
 
 
 # Compliance Automation MVP — HIPAA Readiness Framework
@@ -111,11 +113,14 @@ Copyright (c) 2026 Ievgen Bondarenko
 All rights reserved.
 
 This repository and its contents are proprietary and confidential.
-Unauthorized copying, modification, distribution, or use of this software,
-in whole or in part, is strictly prohibited without prior written permission
-from the copyright holder.
+Unauthorized copying, modification, distribution, sublicensing,
+or use of this software, in whole or in part, is strictly prohibited
+without prior written permission from the copyright holder.
 
 This repository is provided for internal development, evaluation,
 and implementation purposes only.
+
+No license, express or implied, is granted to any third party
+except by explicit written agreement.
 
 
