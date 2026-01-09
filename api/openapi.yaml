@@ -1,1 +1,1589 @@
+openapi: 3.0.3
+info:
+title: Compliance Automation MVP API
+version: "1.0.0"
+description: |
+MVP API for multi-tenant HIPAA readiness assessments:
+Portal intake (answers + evidence), deterministic rules engine, report package generation, immutable publishing, audit trail.
 
+servers:
+
+url: https://api.example.com
+description: Production
+url: https://staging-api.example.com
+description: Staging
+security:
+
+bearerAuth: []
+tags:
+
+name: Auth
+name: Tenants
+name: Members
+name: Catalog
+name: Assessments
+name: Answers
+name: Evidence
+name: Engine
+name: Reports
+name: Audit
+paths:
+/auth/login:
+post:
+tags: [Auth]
+security: []
+summary: Login
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/LoginRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/LoginResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+
+/auth/logout:
+post:
+tags: [Auth]
+summary: Logout
+responses:
+"204":
+description: No Content
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+
+/me:
+get:
+tags: [Auth]
+summary: Current user profile
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/MeResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+
+/tenants:
+post:
+tags: [Tenants]
+summary: Create tenant (internal only)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateTenantRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+get:
+tags: [Tenants]
+summary: List tenants (client sees only own)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+
+/tenants/{tenant_id}:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+get:
+tags: [Tenants]
+summary: Get tenant
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantDTO" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+patch:
+tags: [Tenants]
+summary: Update tenant (internal only)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/UpdateTenantRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/members:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+post:
+tags: [Members]
+summary: Add/invite member (internal only)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AddTenantMemberRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantMemberDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+get:
+tags: [Members]
+summary: List members (internal only)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantMemberListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/members/{member_id}:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/MemberId"
+patch:
+tags: [Members]
+summary: Update member (internal only)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/UpdateTenantMemberRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/TenantMemberDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/frameworks:
+get:
+tags: [Catalog]
+summary: List supported frameworks (read-only)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/FrameworkListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+
+/frameworks/{framework_id}/controls:
+parameters:
+- $ref: "#/components/parameters/FrameworkId"
+- $ref: "#/components/parameters/ControlsetVersion"
+get:
+tags: [Catalog]
+summary: List controls for framework/version (read-only)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ControlListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/frameworks/{framework_id}/questions:
+parameters:
+- $ref: "#/components/parameters/FrameworkId"
+- $ref: "#/components/parameters/ActiveOnly"
+get:
+tags: [Catalog]
+summary: List questions for framework (read-only)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/QuestionListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/assessments:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+post:
+tags: [Assessments]
+summary: Create assessment
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateAssessmentRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AssessmentDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+get:
+tags: [Assessments]
+summary: List assessments
+parameters:
+- $ref: "#/components/parameters/AssessmentStatus"
+- $ref: "#/components/parameters/DateFrom"
+- $ref: "#/components/parameters/DateTo"
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AssessmentListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Assessments]
+summary: Get assessment
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AssessmentDTO" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+patch:
+tags: [Assessments]
+summary: Update assessment (allowed only when not completed)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/UpdateAssessmentRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AssessmentDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/submit:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+post:
+tags: [Assessments]
+summary: Submit assessment (Gate 1)
+responses:
+"200":
+description: Submitted
+content:
+application/json:
+schema: { $ref: "#/components/schemas/SubmitAssessmentResponse" }
+"400":
+description: Gate failed
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ValidationErrorResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/complete:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+post:
+tags: [Assessments]
+summary: Complete assessment (internal only)
+responses:
+"200":
+description: Completed
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AssessmentDTO" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/answers:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Answers]
+summary: List answers for assessment
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AnswerListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/answers/{question_id}:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+- $ref: "#/components/parameters/QuestionId"
+put:
+tags: [Answers]
+summary: Upsert answer
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/UpsertAnswerRequest" }
+responses:
+"200":
+description: Upserted
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AnswerDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/answers/batch:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+patch:
+tags: [Answers]
+summary: Batch upsert answers
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/BatchUpsertAnswersRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/BatchUpsertAnswersResponse" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/evidence/upload-url:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+post:
+tags: [Evidence]
+summary: Create presigned upload URL
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateUploadUrlRequest" }
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateUploadUrlResponse" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/evidence:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+post:
+tags: [Evidence]
+summary: Register uploaded evidence file
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/RegisterEvidenceFileRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EvidenceFileDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+get:
+tags: [Evidence]
+summary: List evidence files
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EvidenceFileListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/evidence-links:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+post:
+tags: [Evidence]
+summary: Link evidence to assessment/control/question
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateEvidenceLinkRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EvidenceLinkDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+get:
+tags: [Evidence]
+summary: List evidence links for assessment
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EvidenceLinkListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/evidence/{evidence_file_id}/download-url:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/EvidenceFileId"
+get:
+tags: [Evidence]
+summary: Create presigned download URL for evidence
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/DownloadUrlResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/engine/run:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+post:
+tags: [Engine]
+summary: Run deterministic engine (internal only)
+requestBody:
+required: false
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EngineRunRequest" }
+responses:
+"200":
+description: Accepted/Started
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EngineRunResponse" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/engine/status:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+- $ref: "#/components/parameters/RunId"
+get:
+tags: [Engine]
+summary: Engine run status
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/EngineRunResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/results/controls:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Engine]
+summary: List control results
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ControlResultListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/results/gaps:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Engine]
+summary: List gaps
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/GapListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/results/risks:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Engine]
+summary: List risks (1:1 with gaps)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/RiskListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/results/remediation:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+get:
+tags: [Engine]
+summary: List remediation actions
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/RemediationActionListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+/tenants/{tenant_id}/assessments/{assessment_id}/reports/packages:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/AssessmentId"
+post:
+tags: [Reports]
+summary: Create report package draft (internal only)
+requestBody:
+required: false
+content:
+application/json:
+schema: { $ref: "#/components/schemas/CreateReportPackageRequest" }
+responses:
+"201":
+description: Created
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ReportPackageDTO" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/reports/packages/{report_package_id}/generate:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/ReportPackageId"
+post:
+tags: [Reports]
+summary: Generate report files (internal only, includes AI summary)
+requestBody:
+required: true
+content:
+application/json:
+schema: { $ref: "#/components/schemas/GenerateReportPackageRequest" }
+responses:
+"200":
+description: Generated
+content:
+application/json:
+schema: { $ref: "#/components/schemas/GenerateReportPackageResponse" }
+"400":
+$ref: "#/components/responses/BadRequestError"
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/reports/packages/{report_package_id}:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/ReportPackageId"
+get:
+tags: [Reports]
+summary: Get report package metadata (client: published only)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ReportPackageWithFilesResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/reports/packages/{report_package_id}/publish:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/ReportPackageId"
+post:
+tags: [Reports]
+summary: Publish report package (internal only, immutable)
+requestBody:
+required: false
+content:
+application/json:
+schema: { $ref: "#/components/schemas/PublishReportPackageRequest" }
+responses:
+"200":
+description: Published
+content:
+application/json:
+schema: { $ref: "#/components/schemas/PublishReportPackageResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"409":
+$ref: "#/components/responses/ConflictError"
+
+/tenants/{tenant_id}/reports/packages/{report_package_id}/download:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/ReportPackageId"
+get:
+tags: [Reports]
+summary: Download published package as ZIP (presigned URL)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/DownloadPackageResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/reports/files/{report_file_id}/download-url:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/ReportFileId"
+get:
+tags: [Reports]
+summary: Download a single report file (presigned URL)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/DownloadUrlResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+"404":
+$ref: "#/components/responses/NotFoundError"
+
+/tenants/{tenant_id}/audit-events:
+parameters:
+- $ref: "#/components/parameters/TenantId"
+- $ref: "#/components/parameters/DateFrom"
+- $ref: "#/components/parameters/DateTo"
+- $ref: "#/components/parameters/EventType"
+get:
+tags: [Audit]
+summary: List audit events (client gets filtered view)
+responses:
+"200":
+description: OK
+content:
+application/json:
+schema: { $ref: "#/components/schemas/AuditEventListResponse" }
+"401":
+$ref: "#/components/responses/UnauthorizedError"
+"403":
+$ref: "#/components/responses/ForbiddenError"
+
+components:
+securitySchemes:
+bearerAuth:
+type: http
+scheme: bearer
+bearerFormat: JWT
+
+parameters:
+TenantId:
+name: tenant_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+FrameworkId:
+name: framework_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+AssessmentId:
+name: assessment_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+QuestionId:
+name: question_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+EvidenceFileId:
+name: evidence_file_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+ReportPackageId:
+name: report_package_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+ReportFileId:
+name: report_file_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+MemberId:
+name: member_id
+in: path
+required: true
+schema: { type: string, format: uuid }
+ControlsetVersion:
+name: version
+in: query
+required: false
+schema: { type: string, example: "v1.0" }
+ActiveOnly:
+name: active
+in: query
+required: false
+schema: { type: boolean, default: true }
+AssessmentStatus:
+name: status
+in: query
+required: false
+schema:
+type: string
+enum: [draft, in_progress, submitted, completed]
+DateFrom:
+name: date_from
+in: query
+required: false
+schema: { type: string, format: date }
+DateTo:
+name: date_to
+in: query
+required: false
+schema: { type: string, format: date }
+RunId:
+name: run_id
+in: query
+required: true
+schema: { type: string, format: uuid }
+EventType:
+name: event_type
+in: query
+required: false
+schema: { type: string }
+
+responses:
+BadRequestError:
+description: Bad Request
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ErrorResponse" }
+UnauthorizedError:
+description: Unauthorized
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ErrorResponse" }
+ForbiddenError:
+description: Forbidden
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ErrorResponse" }
+NotFoundError:
+description: Not Found
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ErrorResponse" }
+ConflictError:
+description: Conflict / State lock
+content:
+application/json:
+schema: { $ref: "#/components/schemas/ErrorResponse" }
+
+schemas:
+# ---- Common ----
+ErrorResponse:
+type: object
+required: [error_code, message]
+properties:
+error_code: { type: string }
+message: { type: string }
+details: { type: object, additionalProperties: true }
+
+ValidationErrorResponse:
+  allOf:
+    - $ref: "#/components/schemas/ErrorResponse"
+  example:
+    error_code: ASSESSMENT_SUBMIT_VALIDATION_FAILED
+    message: Assessment is incomplete
+    details:
+      answered_ratio: 0.52
+      required_ratio: 0.70
+      missing_critical_questions: ["Q-RISK-ANALYSIS", "Q-BAA"]
+      missing_question_count: 18
+
+# ---- Auth ----
+LoginRequest:
+  type: object
+  required: [email, password]
+  properties:
+    email: { type: string, format: email }
+    password: { type: string }
+LoginResponse:
+  type: object
+  required: [token, user]
+  properties:
+    token: { type: string }
+    user: { $ref: "#/components/schemas/UserDTO" }
+MeResponse:
+  type: object
+  required: [user, memberships]
+  properties:
+    user: { $ref: "#/components/schemas/UserDTO" }
+    memberships:
+      type: array
+      items: { $ref: "#/components/schemas/TenantMemberDTO" }
+
+# ---- Tenant & Membership ----
+TenantDTO:
+  type: object
+  required: [id, name, created_at, updated_at]
+  properties:
+    id: { type: string, format: uuid }
+    name: { type: string }
+    industry: { type: string, nullable: true }
+    size_band: { type: string, nullable: true }
+    primary_contact_email: { type: string, format: email, nullable: true }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }
+
+CreateTenantRequest:
+  type: object
+  required: [name]
+  properties:
+    name: { type: string }
+    industry: { type: string, nullable: true }
+    size_band: { type: string, nullable: true }
+    primary_contact_email: { type: string, format: email, nullable: true }
+
+UpdateTenantRequest:
+  type: object
+  properties:
+    name: { type: string }
+    industry: { type: string, nullable: true }
+    size_band: { type: string, nullable: true }
+    primary_contact_email: { type: string, format: email, nullable: true }
+
+TenantListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/TenantDTO" }
+
+UserDTO:
+  type: object
+  required: [id, email, status, created_at, updated_at]
+  properties:
+    id: { type: string, format: uuid }
+    email: { type: string, format: email }
+    full_name: { type: string, nullable: true }
+    status: { type: string, enum: [active, disabled] }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }
+
+TenantMemberDTO:
+  type: object
+  required: [id, tenant_id, user_id, role, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    user_id: { type: string, format: uuid }
+    role: { type: string, enum: [client_user, internal_user] }
+    created_at: { type: string, format: date-time }
+
+AddTenantMemberRequest:
+  type: object
+  required: [email, role]
+  properties:
+    email: { type: string, format: email }
+    role: { type: string, enum: [client_user, internal_user] }
+
+UpdateTenantMemberRequest:
+  type: object
+  properties:
+    role: { type: string, enum: [client_user, internal_user] }
+    is_enabled: { type: boolean }
+
+TenantMemberListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/TenantMemberDTO" }
+
+# ---- Catalog ----
+FrameworkDTO:
+  type: object
+  required: [id, code, name]
+  properties:
+    id: { type: string, format: uuid }
+    code: { type: string, example: HIPAA }
+    name: { type: string }
+
+FrameworkListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/FrameworkDTO" }
+
+ControlDTO:
+  type: object
+  required: [id, framework_id, controlset_version_id, control_code, title, category, severity, na_eligible]
+  properties:
+    id: { type: string, format: uuid }
+    framework_id: { type: string, format: uuid }
+    controlset_version_id: { type: string, format: uuid }
+    control_code: { type: string }
+    title: { type: string }
+    description: { type: string, nullable: true }
+    category: { type: string, enum: [Administrative, Physical, Technical, Vendor] }
+    severity: { type: string, enum: [Low, Medium, High, Critical] }
+    na_eligible: { type: boolean }
+
+ControlListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/ControlDTO" }
+
+QuestionDTO:
+  type: object
+  required: [id, framework_id, control_id, question_code, text, answer_type, is_active]
+  properties:
+    id: { type: string, format: uuid }
+    framework_id: { type: string, format: uuid }
+    control_id: { type: string, format: uuid }
+    question_code: { type: string }
+    text: { type: string }
+    answer_type:
+      type: string
+      enum: [yes_no, yes_no_partial, yes_no_unknown, select, date]
+    options:
+      type: object
+      nullable: true
+      additionalProperties: true
+    is_active: { type: boolean }
+
+QuestionListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/QuestionDTO" }
+
+# ---- Assessments ----
+AssessmentDTO:
+  type: object
+  required:
+    [id, tenant_id, framework_id, controlset_version_id, ruleset_version_id, status, created_by_user_id, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    framework_id: { type: string, format: uuid }
+    controlset_version_id: { type: string, format: uuid }
+    ruleset_version_id: { type: string, format: uuid }
+    status: { type: string, enum: [draft, in_progress, submitted, completed] }
+    created_by_user_id: { type: string, format: uuid }
+    created_at: { type: string, format: date-time }
+    submitted_at: { type: string, format: date-time, nullable: true }
+    completed_at: { type: string, format: date-time, nullable: true }
+    metadata:
+      type: object
+      nullable: true
+      additionalProperties: true
+
+CreateAssessmentRequest:
+  type: object
+  required: [framework_id]
+  properties:
+    framework_id: { type: string, format: uuid }
+    metadata:
+      type: object
+      nullable: true
+      additionalProperties: true
+
+UpdateAssessmentRequest:
+  type: object
+  properties:
+    status: { type: string, enum: [draft, in_progress] }
+    metadata:
+      type: object
+      nullable: true
+      additionalProperties: true
+
+SubmitAssessmentResponse:
+  type: object
+  required: [assessment_id, status, submitted_at]
+  properties:
+    assessment_id: { type: string, format: uuid }
+    status: { type: string, enum: [submitted] }
+    submitted_at: { type: string, format: date-time }
+
+AssessmentListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/AssessmentDTO" }
+
+# ---- Answers ----
+AnswerValue:
+  type: object
+  properties:
+    choice:
+      type: string
+      nullable: true
+      enum: [Yes, No, Partial, Unknown, N/A]
+    date:
+      type: string
+      format: date
+      nullable: true
+    text:
+      type: string
+      nullable: true
+
+AnswerDTO:
+  type: object
+  required: [id, tenant_id, assessment_id, question_id, value, created_at, updated_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    question_id: { type: string, format: uuid }
+    value: { $ref: "#/components/schemas/AnswerValue" }
+    updated_by_user_id: { type: string, format: uuid, nullable: true }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }
+
+UpsertAnswerRequest:
+  type: object
+  required: [value]
+  properties:
+    value: { $ref: "#/components/schemas/AnswerValue" }
+
+BatchUpsertAnswersRequest:
+  type: object
+  required: [answers]
+  properties:
+    answers:
+      type: array
+      items:
+        type: object
+        required: [question_id, value]
+        properties:
+          question_id: { type: string, format: uuid }
+          value: { $ref: "#/components/schemas/AnswerValue" }
+
+BatchUpsertAnswersResponse:
+  type: object
+  required: [updated_count]
+  properties:
+    updated_count: { type: integer, minimum: 0 }
+
+AnswerListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/AnswerDTO" }
+
+# ---- Evidence ----
+CreateUploadUrlRequest:
+  type: object
+  required: [file_name, content_type, size_bytes]
+  properties:
+    file_name: { type: string }
+    content_type: { type: string }
+    size_bytes: { type: integer, minimum: 1 }
+
+CreateUploadUrlResponse:
+  type: object
+  required: [upload_url, storage_key, expires_at]
+  properties:
+    upload_url: { type: string }
+    storage_key: { type: string }
+    expires_at: { type: string, format: date-time }
+
+RegisterEvidenceFileRequest:
+  type: object
+  required: [storage_key, file_name, content_type, size_bytes]
+  properties:
+    storage_key: { type: string }
+    file_name: { type: string }
+    content_type: { type: string }
+    size_bytes: { type: integer, minimum: 1 }
+    tags:
+      type: array
+      items: { type: string }
+
+EvidenceFileDTO:
+  type: object
+  required: [id, tenant_id, uploaded_by_user_id, file_name, content_type, size_bytes, storage_key, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    uploaded_by_user_id: { type: string, format: uuid }
+    file_name: { type: string }
+    content_type: { type: string }
+    size_bytes: { type: integer }
+    storage_key: { type: string }
+    sha256: { type: string, nullable: true }
+    tags:
+      type: array
+      items: { type: string }
+    created_at: { type: string, format: date-time }
+
+EvidenceFileListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/EvidenceFileDTO" }
+
+CreateEvidenceLinkRequest:
+  type: object
+  required: [evidence_file_id]
+  properties:
+    evidence_file_id: { type: string, format: uuid }
+    control_id: { type: string, format: uuid, nullable: true }
+    question_id: { type: string, format: uuid, nullable: true }
+    note: { type: string, nullable: true }
+
+EvidenceLinkDTO:
+  type: object
+  required: [id, tenant_id, assessment_id, evidence_file_id, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    evidence_file_id: { type: string, format: uuid }
+    control_id: { type: string, format: uuid, nullable: true }
+    question_id: { type: string, format: uuid, nullable: true }
+    note: { type: string, nullable: true }
+    created_at: { type: string, format: date-time }
+
+EvidenceLinkListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/EvidenceLinkDTO" }
+
+DownloadUrlResponse:
+  type: object
+  required: [download_url, expires_at]
+  properties:
+    download_url: { type: string }
+    expires_at: { type: string, format: date-time }
+
+# ---- Engine ----
+EngineRunRequest:
+  type: object
+  properties:
+    idempotency_key: { type: string, nullable: true }
+
+EngineRunResponse:
+  type: object
+  required: [run_id, assessment_id, status, controlset_version_id, ruleset_version_id]
+  properties:
+    run_id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    status: { type: string, enum: [queued, running, completed, failed] }
+    started_at: { type: string, format: date-time, nullable: true }
+    finished_at: { type: string, format: date-time, nullable: true }
+    controlset_version_id: { type: string, format: uuid }
+    ruleset_version_id: { type: string, format: uuid }
+    error: { type: string, nullable: true }
+
+ControlResultDTO:
+  type: object
+  required: [id, assessment_id, control_id, status, severity, calculated_at]
+  properties:
+    id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    control_id: { type: string, format: uuid }
+    status: { type: string, enum: [Pass, Partial, Fail, Unknown] }
+    severity: { type: string, enum: [Low, Medium, High, Critical] }
+    rationale: { type: string, nullable: true }
+    calculated_at: { type: string, format: date-time }
+
+ControlResultListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/ControlResultDTO" }
+
+GapDTO:
+  type: object
+  required: [id, assessment_id, control_id, status_source, severity, description, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    control_id: { type: string, format: uuid }
+    status_source: { type: string, enum: [Fail, Partial, Unknown] }
+    severity: { type: string, enum: [Low, Medium, High, Critical] }
+    description: { type: string }
+    recommended_remediation: { type: string, nullable: true }
+    created_at: { type: string, format: date-time }
+
+GapListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/GapDTO" }
+
+RiskDTO:
+  type: object
+  required: [id, assessment_id, gap_id, severity, description, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    gap_id: { type: string, format: uuid }
+    severity: { type: string, enum: [Low, Medium, High, Critical] }
+    description: { type: string }
+    rationale: { type: string, nullable: true }
+    created_at: { type: string, format: date-time }
+
+RiskListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/RiskDTO" }
+
+RemediationActionDTO:
+  type: object
+  required: [id, assessment_id, gap_id, priority, effort, type, description, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    gap_id: { type: string, format: uuid }
+    priority: { type: string, enum: [Critical, High, Medium] }
+    effort: { type: string, enum: [S, M, L] }
+    type: { type: string, enum: [Policy, Technical, Process] }
+    template_ref: { type: string, nullable: true }
+    description: { type: string }
+    created_at: { type: string, format: date-time }
+
+RemediationActionListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/RemediationActionDTO" }
+
+# ---- Reports ----
+ReportPackageDTO:
+  type: object
+  required: [id, tenant_id, assessment_id, package_version, status, generated_by_user_id]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid }
+    assessment_id: { type: string, format: uuid }
+    package_version: { type: integer, minimum: 1 }
+    status: { type: string, enum: [draft, generated, published] }
+    generated_at: { type: string, format: date-time, nullable: true }
+    published_at: { type: string, format: date-time, nullable: true }
+    generated_by_user_id: { type: string, format: uuid }
+    notes: { type: string, nullable: true }
+
+CreateReportPackageRequest:
+  type: object
+  properties:
+    notes: { type: string, nullable: true }
+    idempotency_key: { type: string, nullable: true }
+
+GenerateReportPackageRequest:
+  type: object
+  required: [formats, include_ai_summary]
+  properties:
+    formats:
+      type: array
+      items: { type: string, enum: [PDF, XLSX, DOCX] }
+    include_ai_summary: { type: boolean }
+    ai_tone:
+      type: string
+      enum: [neutral, executive, plain_language]
+      default: neutral
+    idempotency_key: { type: string, nullable: true }
+
+ReportFileStubDTO:
+  type: object
+  required: [id, file_type, format, file_name, size_bytes]
+  properties:
+    id: { type: string, format: uuid }
+    file_type:
+      type: string
+      enum: [executive_summary, gap_register, risk_register, roadmap, evidence_checklist]
+    format: { type: string, enum: [PDF, XLSX, DOCX] }
+    file_name: { type: string }
+    size_bytes: { type: integer, minimum: 0 }
+
+GenerateReportPackageResponse:
+  type: object
+  required: [report_package_id, status, generated_at, files]
+  properties:
+    report_package_id: { type: string, format: uuid }
+    status: { type: string, enum: [generated] }
+    generated_at: { type: string, format: date-time }
+    files:
+      type: array
+      items: { $ref: "#/components/schemas/ReportFileStubDTO" }
+
+ReportPackageWithFilesResponse:
+  type: object
+  required: [package, files]
+  properties:
+    package: { $ref: "#/components/schemas/ReportPackageDTO" }
+    files:
+      type: array
+      items: { $ref: "#/components/schemas/ReportFileStubDTO" }
+
+PublishReportPackageRequest:
+  type: object
+  properties:
+    publish_note: { type: string, nullable: true }
+
+PublishReportPackageResponse:
+  type: object
+  required: [report_package_id, status, published_at]
+  properties:
+    report_package_id: { type: string, format: uuid }
+    status: { type: string, enum: [published] }
+    published_at: { type: string, format: date-time }
+
+DownloadPackageResponse:
+  type: object
+  required: [download_url, expires_at]
+  properties:
+    download_url: { type: string }
+    expires_at: { type: string, format: date-time }
+
+# ---- Audit ----
+AuditEventDTO:
+  type: object
+  required: [id, event_type, created_at]
+  properties:
+    id: { type: string, format: uuid }
+    tenant_id: { type: string, format: uuid, nullable: true }
+    user_id: { type: string, format: uuid, nullable: true }
+    event_type: { type: string }
+    entity_type: { type: string, nullable: true }
+    entity_id: { type: string, format: uuid, nullable: true }
+    payload: { type: object, additionalProperties: true }
+    created_at: { type: string, format: date-time }
+
+AuditEventListResponse:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items: { $ref: "#/components/schemas/AuditEventDTO" }
