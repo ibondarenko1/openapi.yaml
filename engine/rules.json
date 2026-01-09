@@ -1,1 +1,219 @@
+{
+"ruleset_version": "v1.0",
+"framework": "HIPAA",
+"description": "HIPAA deterministic control evaluation ruleset for small healthcare providers",
+"rules": [
+{
+"rule_id": "RULE-RISK-ANALYSIS-NO",
+"control_code": "164.308(a)(1)(ii)(A)",
+"conditions": [
+{
+"question_code": "Q-RISK-ANALYSIS",
+"operator": "=",
+"value": "No"
+}
+],
+"result": {
+"control_status": "Fail",
+"gap_severity": "High",
+"risk_severity": "High",
+"remediation_type": "Process",
+"remediation_description": "Conduct and document a comprehensive HIPAA risk analysis covering all systems handling ePHI"
+}
+},
+
+{
+  "rule_id": "RULE-RISK-ANALYSIS-PARTIAL",
+  "control_code": "164.308(a)(1)(ii)(A)",
+  "conditions": [
+    {
+      "question_code": "Q-RISK-ANALYSIS",
+      "operator": "=",
+      "value": "Partial"
+    }
+  ],
+  "result": {
+    "control_status": "Partial",
+    "gap_severity": "Medium",
+    "risk_severity": "Medium",
+    "remediation_type": "Process",
+    "remediation_description": "Update and expand existing risk analysis to cover all locations, vendors, and systems"
+  }
+},
+
+{
+  "rule_id": "RULE-ACCESS-CONTROL-NO",
+  "control_code": "164.312(a)(1)",
+  "conditions": [
+    {
+      "question_code": "Q-ROLE_BASED_ACCESS",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "High",
+    "risk_severity": "High",
+    "remediation_type": "Technical",
+    "remediation_description": "Implement role-based access control ensuring minimum necessary access to ePHI"
+  }
+},
+
+{
+  "rule_id": "RULE-UNIQUE-USER-ID-NO",
+  "control_code": "164.312(a)(2)(i)",
+  "conditions": [
+    {
+      "question_code": "Q-UNIQUE-USER-ID",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "High",
+    "risk_severity": "High",
+    "remediation_type": "Technical",
+    "remediation_description": "Assign a unique user identifier to each workforce member accessing ePHI"
+  }
+},
+
+{
+  "rule_id": "RULE-AUDIT-LOGS-NO",
+  "control_code": "164.312(b)",
+  "conditions": [
+    {
+      "question_code": "Q-AUDIT-LOGS",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "High",
+    "risk_severity": "High",
+    "remediation_type": "Technical",
+    "remediation_description": "Enable and retain audit logs for systems handling ePHI and review them periodically"
+  }
+},
+
+{
+  "rule_id": "RULE-ENCRYPTION-AT-REST-NO",
+  "control_code": "164.312(a)(2)(iv)",
+  "conditions": [
+    {
+      "question_code": "Q-ENCRYPTION-AT-REST",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "Critical",
+    "risk_severity": "Critical",
+    "remediation_type": "Technical",
+    "remediation_description": "Enable encryption at rest for all systems and storage containing ePHI"
+  }
+},
+
+{
+  "rule_id": "RULE-ENCRYPTION-IN-TRANSIT-NO",
+  "control_code": "164.312(e)(1)",
+  "conditions": [
+    {
+      "question_code": "Q-ENCRYPTION-IN-TRANSIT",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "Critical",
+    "risk_severity": "Critical",
+    "remediation_type": "Technical",
+    "remediation_description": "Encrypt all ePHI transmitted over electronic communications networks"
+  }
+},
+
+{
+  "rule_id": "RULE-INCIDENT-RESPONSE-NO",
+  "control_code": "164.308(a)(6)(i)",
+  "conditions": [
+    {
+      "question_code": "Q-INCIDENT-RESPONSE-PLAN",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "High",
+    "risk_severity": "High",
+    "remediation_type": "Process",
+    "remediation_description": "Develop and document security incident response procedures and breach notification workflow"
+  }
+},
+
+{
+  "rule_id": "RULE-SECURITY-TRAINING-NO",
+  "control_code": "164.308(a)(5)(i)",
+  "conditions": [
+    {
+      "question_code": "Q-SECURITY-TRAINING",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "Medium",
+    "risk_severity": "Medium",
+    "remediation_type": "Process",
+    "remediation_description": "Implement annual HIPAA security awareness training for all workforce members"
+  }
+},
+
+{
+  "rule_id": "RULE-BAA-NO",
+  "control_code": "164.308(b)(1)",
+  "conditions": [
+    {
+      "question_code": "Q-BAA",
+      "operator": "=",
+      "value": "No"
+    }
+  ],
+  "result": {
+    "control_status": "Fail",
+    "gap_severity": "High",
+    "risk_severity": "High",
+    "remediation_type": "Vendor",
+    "remediation_description": "Execute Business Associate Agreements with all vendors handling ePHI"
+  }
+}
+],
+
+"default_behavior": {
+"unanswered_question": {
+"control_status": "Unknown",
+"gap_severity": "Medium",
+"risk_severity": "Medium"
+},
+"all_conditions_passed_no_match": {
+"control_status": "Pass"
+}
+},
+
+"constraints": {
+"na_prohibited_controls": [
+"164.308(a)(1)(ii)(A)",
+"164.312(a)(1)",
+"164.312(b)",
+"164.312(e)(1)",
+"164.312(e)(2)(ii)"
+]
+}
+}
+
 
