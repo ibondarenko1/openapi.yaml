@@ -1,5 +1,6 @@
 ![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0-brightgreen?logo=openapiinitiative)
 ![License](https://img.shields.io/badge/License-Proprietary-red)
+> Status: Architecture & Data Model MVP (Framework-first, implementation pending)
 
 
 
@@ -38,21 +39,27 @@ This repository is intentionally **framework-first**, not UI-first.
 ---
 
 ## Repository Structure
-/
-├─ openapi.yaml # OpenAPI 3.0 contract (source of truth)
-├─ API_SPEC_v1.md # Human-readable workflow, RBAC, validation rules
-│
-├─ /seed
-│ ├─ controls.csv # HIPAA Control Set v1 (~40 controls)
-│ ├─ questions.csv # Full Question Set v1 (~100 questions)
-│ └─ rules.json # Deterministic Rules Engine v1
-│
-├─ /templates
-│ ├─ executive_summary.md # Executive summary template (Markdown → PDF)
-│ ├─ gap_register.xlsx # Gap register template
-│ ├─ risk_register.xlsx # Risk register template (1 gap = 1 risk)
-│ ├─ remediation_roadmap.xlsx
-│ └─ evidence_checklist.xlsx
+
+This repository contains the technical foundation for a compliance automation MVP.
+
+Current structure:
+
+/api  
+- OpenAPI contract for the client portal and compliance ingestion API
+
+/engine  
+- Compliance rule engine data model  
+- Control catalog, questions and rules (materialized from design backlog)
+
+/artifacts  
+- Audit-ready output templates (risk register, gap analysis, remediation roadmap, executive summary)
+
+/framework  
+- Architecture documentation and platform design
+
+README.md  
+- Project overview and architecture description
+
 
 ---
 
