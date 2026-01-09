@@ -1,1 +1,50 @@
-
+control_code,title,category,severity,na_eligible,description
+164.308(a)(1)(ii)(A),Risk Analysis,Administrative,High,false,Conduct an accurate and thorough assessment of potential risks and vulnerabilities to ePHI
+164.308(a)(1)(ii)(B),Risk Management,Administrative,High,false,Implement security measures sufficient to reduce risks and vulnerabilities to a reasonable level
+164.308(a)(1)(ii)(C),Sanction Policy,Administrative,Medium,false,Apply appropriate sanctions against workforce members who fail to comply with security policies
+164.308(a)(1)(ii)(D),Information System Activity Review,Administrative,Medium,false,Regularly review records of information system activity such as audit logs and access reports
+164.308(a)(2),Assigned Security Responsibility,Administrative,Medium,false,Identify a security official responsible for the development and implementation of security policies
+164.308(a)(3)(i),Workforce Security,Administrative,Medium,false,Ensure appropriate access to ePHI and prevent unauthorized workforce access
+164.308(a)(3)(ii)(A),Authorization and Supervision,Administrative,Medium,false,Authorize workforce members who have access to ePHI
+164.308(a)(3)(ii)(B),Workforce Clearance Procedure,Administrative,Medium,false,Implement procedures to determine workforce access to ePHI
+164.308(a)(3)(ii)(C),Termination Procedures,Administrative,Medium,false,Terminate access to ePHI when employment ends or roles change
+164.308(a)(4)(i),Information Access Management,Administrative,High,false,Implement policies and procedures for authorizing access to ePHI
+164.308(a)(4)(ii)(A),Isolating Health Care Clearinghouse Functions,Administrative,Low,true,Isolate clearinghouse functions if applicable
+164.308(a)(4)(ii)(B),Access Authorization,Administrative,High,false,Implement access authorization policies consistent with role-based access
+164.308(a)(4)(ii)(C),Access Establishment and Modification,Administrative,High,false,Establish procedures for granting, modifying, and terminating access
+164.308(a)(5)(i),Security Awareness and Training,Administrative,Medium,false,Implement a security awareness and training program for workforce members
+164.308(a)(5)(ii)(A),Security Reminders,Administrative,Low,true,Provide periodic security reminders
+164.308(a)(5)(ii)(B),Protection from Malicious Software,Administrative,High,false,Implement procedures to guard against malicious software
+164.308(a)(5)(ii)(C),Log-in Monitoring,Administrative,Medium,false,Monitor log-in attempts and report discrepancies
+164.308(a)(5)(ii)(D),Password Management,Administrative,High,false,Implement procedures for creating and managing passwords
+164.308(a)(6)(i),Security Incident Procedures,Administrative,High,false,Identify and respond to suspected or known security incidents
+164.308(a)(7)(i),Contingency Plan,Administrative,High,false,Establish policies and procedures for responding to emergencies or system failures
+164.308(a)(7)(ii)(A),Data Backup Plan,Administrative,High,false,Create and maintain retrievable exact copies of ePHI
+164.308(a)(7)(ii)(B),Disaster Recovery Plan,Administrative,High,false,Restore data and systems following an emergency
+164.308(a)(7)(ii)(C),Emergency Mode Operation Plan,Administrative,Medium,false,Enable continuation of critical business processes during emergencies
+164.308(a)(7)(ii)(D),Testing and Revision Procedures,Administrative,Medium,false,Test and revise contingency plans periodically
+164.308(a)(7)(ii)(E),Applications and Data Criticality Analysis,Administrative,Medium,false,Assess the relative criticality of applications and data
+164.308(a)(8),Evaluation,Administrative,Medium,false,Perform periodic technical and nontechnical evaluations of security safeguards
+164.310(a)(1),Facility Access Controls,Physical,Medium,false,Limit physical access to information systems and facilities
+164.310(a)(2)(i),Contingency Operations,Physical,Medium,false,Allow facility access during emergencies
+164.310(a)(2)(ii),Facility Security Plan,Physical,Medium,false,Safeguard facilities and equipment from unauthorized access
+164.310(a)(2)(iii),Access Control and Validation Procedures,Physical,Medium,false,Control and validate access to facilities
+164.310(a)(2)(iv),Maintenance Records,Physical,Low,true,Document repairs and modifications to physical components
+164.310(b),Workstation Use,Physical,Medium,false,Define proper workstation use and functions
+164.310(c),Workstation Security,Physical,High,false,Implement physical safeguards for workstations
+164.310(d)(1),Device and Media Controls,Physical,High,false,Control receipt, removal, and disposal of hardware and electronic media
+164.310(d)(2)(i),Disposal,Physical,High,false,Dispose of ePHI and media securely
+164.310(d)(2)(ii),Media Re-use,Physical,High,false,Remove ePHI from media before reuse
+164.312(a)(1),Access Control,Technical,High,false,Implement technical policies to allow access only to authorized users
+164.312(a)(2)(i),Unique User Identification,Technical,High,false,Assign unique identifiers to users
+164.312(a)(2)(ii),Emergency Access Procedure,Technical,Medium,false,Establish emergency access procedures
+164.312(a)(2)(iii),Automatic Logoff,Technical,Medium,true,Terminate sessions after inactivity
+164.312(a)(2)(iv),Encryption and Decryption,Technical,High,false,Encrypt and decrypt ePHI
+164.312(b),Audit Controls,Technical,High,false,Implement hardware, software, and procedural audit controls
+164.312(c)(1),Integrity,Technical,High,false,Protect ePHI from improper alteration or destruction
+164.312(c)(2),Mechanism to Authenticate ePHI,Technical,Medium,true,Authenticate ePHI integrity
+164.312(d),Person or Entity Authentication,Technical,High,false,Verify identities of users accessing ePHI
+164.312(e)(1),Transmission Security,Technical,High,false,Protect ePHI transmitted over networks
+164.312(e)(2)(i),Integrity Controls,Technical,Medium,true,Ensure transmitted ePHI is not improperly modified
+164.312(e)(2)(ii),Encryption,Technical,High,false,Encrypt ePHI transmitted over electronic networks
+164.308(b)(1),Business Associate Contracts,Vendor,High,false,Ensure appropriate safeguards by business associates
