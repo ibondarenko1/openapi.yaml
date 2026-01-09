@@ -1,1 +1,53 @@
+question_code,control_code,question_text,answer_type,options,is_required
+Q-RISK-ANALYSIS,164.308(a)(1)(ii)(A),Has a formal HIPAA security risk analysis been conducted within the last 12 months?,yes_no_partial,,true
+Q-RISK-ANALYSIS-SCOPE,164.308(a)(1)(ii)(A),Does the risk analysis cover all systems locations and vendors handling ePHI?,yes_no_partial,,true
+Q-RISK-MANAGEMENT,164.308(a)(1)(ii)(B),Are identified risks formally tracked and remediated?,yes_no_partial,,true
+Q-SANCTION-POLICY,164.308(a)(1)(ii)(C),Is there a documented sanction policy for workforce violations?,yes_no,,true
+Q-ACTIVITY-REVIEW,164.308(a)(1)(ii)(D),Are system audit logs and access reports reviewed regularly?,yes_no_partial,,true
+Q-SECURITY-OFFICER,164.308(a)(2),Is a security officer formally assigned and documented?,yes_no,,true
+Q-WORKFORCE-ACCESS,164.308(a)(3)(i),Are workforce members granted access only as necessary?,yes_no_partial,,true
+Q-AUTH-SUPERVISION,164.308(a)(3)(ii)(A),Is access to ePHI authorized and supervised?,yes_no_partial,,true
+Q-CLEARANCE,164.308(a)(3)(ii)(B),Is workforce clearance reviewed before granting access?,yes_no,,true
+Q-TERMINATION,164.308(a)(3)(ii)(C),Is access removed promptly upon termination or role change?,yes_no_partial,,true
+Q-ACCESS-MANAGEMENT,164.308(a)(4)(i),Are formal information access management policies in place?,yes_no,,true
+Q-CLEARINGHOUSE,164.308(a)(4)(ii)(A),Are clearinghouse functions isolated where applicable?,yes_no_unknown,,false
+Q-ROLE_BASED_ACCESS,164.308(a)(4)(ii)(B),Is role-based access control implemented?,yes_no,,true
+Q-ACCESS-CHANGES,164.308(a)(4)(ii)(C),Are access changes formally documented and approved?,yes_no_partial,,true
+Q-SECURITY-TRAINING,164.308(a)(5)(i),Is HIPAA security training provided at least annually?,yes_no,,true
+Q-SECURITY-REMINDERS,164.308(a)(5)(ii)(A),Are periodic security reminders communicated?,yes_no_unknown,,false
+Q-MALWARE-PROTECTION,164.308(a)(5)(ii)(B),Is malware protection deployed and maintained?,yes_no,,true
+Q-LOGIN-MONITORING,164.308(a)(5)(ii)(C),Are login attempts monitored and anomalies reviewed?,yes_no_partial,,true
+Q-PASSWORD-MANAGEMENT,164.308(a)(5)(ii)(D),Are password complexity and rotation enforced?,yes_no_partial,,true
+Q-INCIDENT-RESPONSE-PLAN,164.308(a)(6)(i),Is there a documented security incident response plan?,yes_no,,true
+Q-CONTINGENCY-PLAN,164.308(a)(7)(i),Is there a documented contingency plan?,yes_no,,true
+Q-DATA-BACKUP,164.308(a)(7)(ii)(A),Are backups of ePHI performed and tested?,yes_no_partial,,true
+Q-DISASTER-RECOVERY,164.308(a)(7)(ii)(B),Is a disaster recovery plan documented and tested?,yes_no_partial,,true
+Q-EMERGENCY-OPERATIONS,164.308(a)(7)(ii)(C),Can critical operations continue during emergencies?,yes_no_partial,,true
+Q-TESTING-CONTINGENCY,164.308(a)(7)(ii)(D),Are contingency plans tested periodically?,yes_no_partial,,true
+Q-DATA-CRITICALITY,164.308(a)(7)(ii)(E),Is data and application criticality formally assessed?,yes_no,,true
+Q-EVALUATION,164.308(a)(8),Are periodic security evaluations conducted?,yes_no_partial,,true
+Q-FACILITY-ACCESS,164.310(a)(1),Is physical access to facilities restricted?,yes_no_partial,,true
+Q-FACILITY-EMERGENCY,164.310(a)(2)(i),Are emergency access procedures for facilities defined?,yes_no,,true
+Q-FACILITY-SECURITY-PLAN,164.310(a)(2)(ii),Is there a facility security plan?,yes_no,,true
+Q-FACILITY-ACCESS-CONTROL,164.310(a)(2)(iii),Is facility access validated and controlled?,yes_no_partial,,true
+Q-MAINTENANCE-RECORDS,164.310(a)(2)(iv),Are facility maintenance records maintained?,yes_no_unknown,,false
+Q-WORKSTATION-USE,164.310(b),Are workstation use policies defined?,yes_no,,true
+Q-WORKSTATION-SECURITY,164.310(c),Are workstations physically secured?,yes_no_partial,,true
+Q-DEVICE-MEDIA,164.310(d)(1),Are device and media controls documented?,yes_no_partial,,true
+Q-MEDIA-DISPOSAL,164.310(d)(2)(i),Is ePHI media securely disposed?,yes_no,,true
+Q-MEDIA-REUSE,164.310(d)(2)(ii),Is ePHI removed before media reuse?,yes_no,,true
+Q-ACCESS-CONTROL-TECH,164.312(a)(1),Are technical access controls enforced?,yes_no_partial,,true
+Q-UNIQUE-USER-ID,164.312(a)(2)(i),Are unique user IDs assigned?,yes_no,,true
+Q-EMERGENCY-ACCESS,164.312(a)(2)(ii),Is emergency access procedure defined?,yes_no,,true
+Q-AUTO-LOGOFF,164.312(a)(2)(iii),Is automatic logoff enabled?,yes_no_unknown,,false
+Q-ENCRYPTION-AT-REST,164.312(a)(2)(iv),Is ePHI encrypted at rest?,yes_no,,true
+Q-AUDIT-LOGS,164.312(b),Are audit logs enabled and retained?,yes_no_partial,,true
+Q-INTEGRITY-CONTROLS,164.312(c)(1),Are controls in place to protect data integrity?,yes_no_partial,,true
+Q-AUTHENTICATE-EPHI,164.312(c)(2),Are mechanisms used to authenticate ePHI integrity?,yes_no_unknown,,false
+Q-USER-AUTHENTICATION,164.312(d),Are users authenticated before accessing ePHI?,yes_no,,true
+Q-TRANSMISSION-SECURITY,164.312(e)(1),Is transmission of ePHI protected?,yes_no,,true
+Q-TRANSMISSION-INTEGRITY,164.312(e)(2)(i),Are integrity controls applied to transmitted ePHI?,yes_no_unknown,,false
+Q-ENCRYPTION-IN-TRANSIT,164.312(e)(2)(ii),Is ePHI encrypted in transit?,yes_no,,true
+Q-BAA,164.308(b)(1),Are Business Associate Agreements executed with all vendors?,yes_no,,true
+
 
