@@ -1,4 +1,4 @@
-..............![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0-brightgreen?logo=openapiinitiative)
+...............![OpenAPI 3.0](https://img.shields.io/badge/OpenAPI-3.0-brightgreen?logo=openapiinitiative)
 ![License](https://img.shields.io/badge/License-Proprietary-red)
 > Status: Architecture & Data Model MVP (Framework-first, implementation pending)
 
